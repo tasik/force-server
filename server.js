@@ -42,7 +42,13 @@ app.all('*', function (req, res, next) {
         if (debug) console.log(req.method + ' ' + url);
         if (debug) console.log('Request body:');
         if (debug) console.log(req.body);
-        request({ url: url, method: req.method, json: req.body, headers: {'Authorization': req.header('Authorization')} },
+        var headers =  {'Authorization': req.header('Authorization')};
+        if (req.header('Content-Length') === undefined)  {
+            headers['Content-Length'] = 0; 
+        } else {
+            headers['Content-Length'] = req.header('Content-Length'); 
+        }
+        request({ url: url, method: req.method, json: req.body, headers },
             function (error, response, body) {
                 if (error) {
                     console.error('error: ' + response.statusCode)
